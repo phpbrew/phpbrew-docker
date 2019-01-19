@@ -21,6 +21,7 @@ RUN apt-get install -y --no-install-recommends \
  libcurl4 libcurl4-openssl-dev
 
 SHELL ["/bin/bash", "-c"]
+
 ARG PHP_VERSION=7.2
 ARG PHP_DIST_NAME=$PHP_VERSION
 ARG PHP_MIRROR=http://tw2.php.net
@@ -29,11 +30,16 @@ ARG DOWNLOADER=wget
 ENV PHPBREW_ROOT /root/.phpbrew
 ENV PHPBREW_HOME /root/.phpbrew
 ENV PHPBREW_SET_PROMPT 1
+
+# init and setup phpbrew
 RUN phpbrew init \
- && echo 'source $HOME/.phpbrew/bashrc' >> /root/.bashrc \
- && source ~/.phpbrew/bashrc \
+ && echo 'source $HOME/.phpbrew/bashrc' >> /root/.bashrc
+
+# predownload the distribution file
+RUN source ~/.phpbrew/bashrc \
  && phpbrew download --mirror $PHP_MIRROR --downloader $DOWNLOADER $PHP_VERSION
 
+# extract and install php
 RUN source ~/.phpbrew/bashrc \
  && phpbrew --debug install --mirror $$PHP_MIRROR --downloader $DOWNLOADER --stdout \
               $PHP_VERSION as $PHP_DIST_NAME \
