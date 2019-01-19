@@ -29,7 +29,7 @@ RUN apt-get install -y --no-install-recommends \
         libfreetype6 libfreetype6-dev \
         libpng-dev libpng16-16 \
         libjpeg-dev libjpeg8-dev libjpeg8 \
-        libxpm4 libltdl7 libltdl-dev
+        libxpm4 libltdl7 libltdl-dev \
         # mysql extension \
         mysql-server mysql-client libmysqlclient-dev libmysqld-dev
         # postgresql extension \
