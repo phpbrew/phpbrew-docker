@@ -56,7 +56,7 @@ build()
 
     # image tags
     local git_tag=$(git name-rev --name-only --tags HEAD 2> /dev/null)
-    if [[ $git_tag != "" || $git_tag != "undefined" ]] ; then
+    if [[ $git_tag != "undefined" ]] ; then
         export GIT_TAG=$git_tag
     fi
 
