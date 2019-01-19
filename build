@@ -64,6 +64,8 @@ build()
         tags+=($(bash $dir/tags.sh))
     elif [[ -x $dir/tags ]] ; then
         tags+=($($dir/tags))
+    elif [[ -f $dir/tags.list ]] ; then
+        tags+=($(cat $dir/tags.list))
     elif [[ -n $GIT_TAG ]] ; then
         tags+=($git_tag)
     elif [[ -n $default_tag ]] ; then
