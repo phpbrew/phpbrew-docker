@@ -44,7 +44,7 @@ ENV PHPBREW_SET_PROMPT 1
 RUN phpbrew init \
   && echo 'source $HOME/.phpbrew/bashrc' >> /root/.bashrc \
   && source ~/.phpbrew/bashrc \
-  && phpbrew --debug install $PHP_VERSION as $PHP_VERSION \
+  && phpbrew --debug install --stdout $PHP_VERSION as $PHP_VERSION \
               +default +bcmath +bz2 +calendar +cli +ctype +dom +fileinfo +filter +json \
               +mbregex +mbstring +mhash +pcntl +pcre  +phar +posix +readline +sockets \
               +tokenizer +xml +curl +zip +openssl=yes +fpm \
