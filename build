@@ -131,6 +131,7 @@ for name in * ; do
     if [[ -e $name/Dockerfile ]] ; then
         image_varname=$(echo ${name}_IMAGE | tr a-z- A-Z_)
         image_repository=$DOCKER_REGISTRY/$name
+        echo "$image_varname=$image_repository:latest"
         DOCKER_BUILD_ARGS+=("--build-arg" "$image_varname=$image_repository:latest")
     fi
 done
