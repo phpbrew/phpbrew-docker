@@ -1,0 +1,145 @@
+#!/bin/bash
+set -e
+DOCKER_REGISTRY=docker.io/phpbrew
+
+PUSH_ONLY=0
+DRY_RUN=0
+
+ARGS=()
+while [[ $# -gt 0 ]]
+do
+    key="$1"
+    case $key in
+        --dry-run)
+            DRY_RUN=1
+            shift
+        ;;
+        -p|--push-only)
+            PUSH_ONLY=1
+            shift
+        ;;
+        *) # unknown option
+            ARGS+=("$1") # save it in an array for later
+            shift # past argument
+        ;;
+    esac
+done
+
+success()
+{
+    echo -e "\033[1;32m"$*"\033[0m"
+}
+
+build()
+{
+    local dir=$1
+    local default_tag=""
+    if [[ $(dirname $dir) == "." ]] ; then
+        name=$(basename $dir)
+    else
+        name=$(dirname $dir)
+        default_tag=$(basename $dir)
+    fi
+
+    local image_repository=$DOCKER_REGISTRY/$name
+
+    echo "==> Building $name in $dir with default tag $default_tag"
+
+
+    # export $name
+    if [[ ! -e $dir/Dockerfile ]] ; then
+        return
+    fi
+
+    declare -a tags=()
+    declare -a docker_args=()
+
+    # image tags
+    local git_tag=$(git name-rev --name-only --tags HEAD 2> /dev/null)
+    if [[ $git_tag != "" || $git_tag != "undefined" ]] ; then
+        export GIT_TAG=$git_tag
+    fi
+
+    if [[ -e $dir/tags.sh ]] ; then
+        tags+=($(bash $dir/tags.sh))
+    elif [[ -x $dir/tags ]] ; then
+        tags+=($($dir/tags))
+    elif [[ -n $GIT_TAG ]] ; then
+        tags+=($git_tag)
+    elif [[ -n $default_tag ]] ; then
+        tags+=("$default_tag")
+    else
+        tags+=("latest")
+    fi
+
+    if [[ $PUSH_ONLY == 1 ]] ; then
+        for tag in ${tags[@]} ; do
+            (set -x ; docker push $image_repository:$tag)
+        done
+        return
+    fi
+
+    if [[ -e $dir/buildargs.sh ]] ; then
+        for build_arg in $(bash $dir/buildargs.sh); do
+            docker_args+=(--build-arg "$build_arg")
+        done
+    fi
+
+    for tag in ${tags[@]} ; do
+        docker_args+=("--tag" "$image_repository:$tag")
+    done
+
+    # docker build does not solve the symlink in the context directory
+    # we need to read the symlink and build up the --file option.
+    if [[ -L $dir/Dockerfile ]] ; then
+        local dockerfile=$dir/$(readlink $dir/Dockerfile)
+        docker_args+=(--file "$dockerfile")
+    fi
+
+    if [[ $DRY_RUN == 1 ]] ; then
+        echo "+ docker build ${DOCKER_BUILD_ARGS[@]} ${docker_args[@]} $dir"
+    else
+        # use sub-shell to show the command
+        (set -x ; docker build "${DOCKER_BUILD_ARGS[@]}" \
+            "${docker_args[@]}" \
+            $dir)
+    fi
+
+    success "[SUCCESS] $name ($dir) image are successfully built and tagged."
+
+    if [[ -f $dir/test.yaml ]] ; then
+        container-structure-test test --image "$image_repository:$tag" --config $dir/test.yaml
+        success "[SUCCESS] $name ($dir) image are successfully validated."
+    fi
+}
+
+build_image_recursively()
+{
+    local image_dir=$1
+    # strip the image dir from the path
+    local dockerfiles=$(find $image_dir -name "Dockerfile" | sort)
+    for dockerfile in ${dockerfiles[@]} ; do
+        echo "==> Found Dockerfile $dockerfile"
+        local image_subdir=$(dirname $dockerfile)
+        build "$image_subdir"
+    done
+}
+
+# bash3 does not support associative array
+declare -a DOCKER_BUILD_ARGS=()
+for name in * ; do
+    if [[ -e $name/Dockerfile ]] ; then
+        image_varname=$(echo ${name}_IMAGE | tr a-z- A-Z_)
+        image_repository=$DOCKER_REGISTRY/$name
+        DOCKER_BUILD_ARGS+=("--build-arg" "$image_varname=$image_repository:latest")
+    fi
+done
+
+if [[ ${#ARGS[*]} > 0 ]] ; then
+    for arg in ${ARGS[*]} ; do
+        build_image_recursively "$arg"
+    done
+else
+    # always build the base image first
+    build_image_recursively "phpbrew"
+fi
