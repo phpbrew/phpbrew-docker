@@ -20,16 +20,15 @@ ENV PHPBREW_PHP php-$PHP_VERSION.10
 ENV PHPBREW_SET_PROMPT 1
 
 
-# Remove default dash and replace it with bash
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+SHELL ["/bin/bash", "-c"]
 
 RUN echo "Asia/Taipei" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
 
 RUN perl -i.bak -pe "s/archive.ubuntu.com/free.nchc.org.tw/g" /etc/apt/sources.list
 
-RUN export DEBIAN_FRONTEND="noninteractive" \
-  && apt-get update \
-  && apt-get build-dep -y php5 \
+ENV DEBIAN_FRONTEND="noninteractive"
+
+RUN apt-get update \
   && apt-get -qqy install php5 \
   && apt-get -qqy install php5-dev \
   && apt-get -qqy install php5-cli \
@@ -47,7 +46,7 @@ RUN export DEBIAN_FRONTEND="noninteractive" \
   && apt-get -qqy install libicu-dev \
   && apt-get -qqy install libmhash-dev libmhash2 \
   && apt-get -qqy install libmcrypt-dev libmcrypt4 \
-  && apt-get -qqy install mysql-server mysql-client libmysqlclient-dev libmysqld-dev \
+  && apt-get -qqy install mysql-client libmysqlclient-dev libmysqld-dev \
   && apt-get -qqy install ca-certificates \
   && apt-get -qqy install libyaml-dev libyaml-0-2 \
   && apt-get -qqy install libcurl4-gnutls-dev libexpat1-dev libz-dev librecode0 \
@@ -55,7 +54,7 @@ RUN export DEBIAN_FRONTEND="noninteractive" \
   && apt-get -qqy install git \
   && apt-get -qqy install wget \
   && apt-get -qqy install curl \
-  && apt-get -qqy install ant ant-contrib sqlite3 \
+  && apt-get -qqy install sqlite3 \
   && apt-get clean -y \
   && apt-get autoclean -y \
   && apt-get autoremove -y \
