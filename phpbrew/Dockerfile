@@ -52,4 +52,5 @@ RUN source ~/.phpbrew/bashrc \
               +cli +phar +bz2 +xml +filter +mbregex +mbstring +posix +pcntl \
  && phpbrew use $PHP_DIST_NAME \
  && which php \
- && php -v
+ && php -v \
+ && phpbrew info
