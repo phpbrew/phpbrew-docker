@@ -4,6 +4,7 @@ DOCKER_REGISTRY=docker.io/phpbrew
 
 PUSH_ONLY=0
 DRY_RUN=0
+PUSH_IMAGE=0
 
 ARGS=()
 while [[ $# -gt 0 ]]
@@ -12,6 +13,10 @@ do
     case $key in
         --dry-run)
             DRY_RUN=1
+            shift
+        ;;
+        --push)
+            PUSH_IMAGE=1
             shift
         ;;
         -p|--push-only)
@@ -105,6 +110,18 @@ build()
         (set -x ; docker build "${DOCKER_BUILD_ARGS[@]}" \
             "${docker_args[@]}" \
             $dir)
+    fi
+
+    if [[ $PUSH_IMAGE == 1 ]] ; then
+        if [[ $DRY_RUN == 1 ]] ; then
+            for tag in ${tags[@]} ; do
+                echo "+ docker push $image_repository:$tag"
+            done
+        else
+            for tag in ${tags[@]} ; do
+                (set -x ; docker push $image_repository:$tag)
+            done
+        fi
     fi
 
     success "[SUCCESS] $name ($dir) image are successfully built and tagged."
