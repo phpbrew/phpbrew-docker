@@ -79,25 +79,16 @@ SHELL ["/bin/bash", "-c"]
 RUN phpbrew init \
   && echo 'source $HOME/.phpbrew/bashrc' >> /root/.bashrc \
   && source ~/.phpbrew/bashrc \
-  && phpbrew install $PHP_SUBVERSION \
+  && phpbrew install --downloader wget --mirror http://tw2.php.net $PHP_SUBVERSION \
               +default +bcmath +bz2 +calendar +cli +ctype +dom +fileinfo +filter +json \
               +mbregex +mbstring +mhash +pcntl +pcre +pdo +phar +posix +readline +sockets \
               +tokenizer +xml +curl +zip +openssl=yes +icu +opcache +fpm +sqlite +mysql +icu +default +intl +gettext
 
-RUN  phpbrew ext install yaml -- --with-yaml=/usr/lib/x86_64-linux-gnu \
-  && phpbrew ext install gd -- --with-png-dir=/opt/local --with-jpeg-dir=/opt/local --with-freetype-dir=/opt/local --enable-gd-native-ttf \
-  && phpbrew ext install github:c9s/cssmin \
-  && phpbrew ext install github:sqmk/pecl-jsmin \
-  && phpbrew ext install github:c9s/php-fileutil \
-  && phpbrew ext install xdebug latest \
-  && phpbrew ext install apcu latest
+ENV DEBIAN_FRONTEND "noninteractive"
 
-RUN echo "Asia/Taipei" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+ENV TZ "Asia/Taipei"
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY php.ini $PHPBREW_ROOT/php/php-$PHP_SUBVERSION/etc/php.ini
-
-VOLUME /home/ubuntu
 WORKDIR /home/ubuntu
-
-COPY build.sh /home/ubuntu/build.sh
-ENTRYPOINT ["/home/ubuntu/build.sh"]
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]

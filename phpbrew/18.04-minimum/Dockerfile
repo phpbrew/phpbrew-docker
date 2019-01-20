@@ -27,8 +27,13 @@ ARG PHP_DIST_NAME=$PHP_VERSION
 ARG PHP_MIRROR=http://tw2.php.net
 ARG DOWNLOADER=wget
 
+# phpbrew root stores the php installation
 ENV PHPBREW_ROOT /root/.phpbrew
+
+# phpbrew home stores the user preference
 ENV PHPBREW_HOME /root/.phpbrew
+
+# enable bash prompt
 ENV PHPBREW_SET_PROMPT 1
 
 # init and setup phpbrew
@@ -46,4 +51,3 @@ RUN source ~/.phpbrew/bashrc \
               +cli +phar +bz2 +xml +filter +mbregex +mbstring +posix +pcntl \
  && phpbrew use $PHP_DIST_NAME \
  && php -v
-
