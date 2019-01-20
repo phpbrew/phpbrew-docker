@@ -22,11 +22,6 @@ RUN apt-get install -y --no-install-recommends \
 
 SHELL ["/bin/bash", "-c"]
 
-ARG PHP_VERSION=7.2
-ARG PHP_DIST_NAME=$PHP_VERSION
-ARG PHP_MIRROR=http://tw2.php.net
-ARG DOWNLOADER=wget
-
 # phpbrew root stores the php installation
 ENV PHPBREW_ROOT /root/.phpbrew
 
@@ -39,6 +34,12 @@ ENV PHPBREW_SET_PROMPT 1
 # init and setup phpbrew
 RUN phpbrew init \
  && echo 'source $HOME/.phpbrew/bashrc' >> /root/.bashrc
+
+
+ARG PHP_VERSION=7.2
+ARG PHP_DIST_NAME=$PHP_VERSION
+ARG PHP_MIRROR=http://tw2.php.net
+ARG DOWNLOADER=wget
 
 # predownload the distribution file
 RUN source ~/.phpbrew/bashrc \
