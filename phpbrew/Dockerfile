@@ -40,6 +40,7 @@ ARG PHP_VERSION=7.2
 ARG PHP_DIST_NAME=$PHP_VERSION
 ARG PHP_MIRROR=http://tw2.php.net
 ARG DOWNLOADER=wget
+ARG PHP_VARIANTS=
 
 # predownload the distribution file
 RUN source ~/.phpbrew/bashrc \
@@ -49,7 +50,7 @@ RUN source ~/.phpbrew/bashrc \
 RUN source ~/.phpbrew/bashrc \
  && phpbrew --debug install --mirror $$PHP_MIRROR --downloader $DOWNLOADER --stdout \
               $PHP_VERSION as $PHP_DIST_NAME \
-              +cli +phar +bz2 +xml +filter +mbregex +mbstring +posix +pcntl \
+              +cli +phar +bz2 +xml +filter +mbregex +mbstring +posix +pcntl $PHP_VARIANTS \
  && phpbrew use $PHP_DIST_NAME \
  && which php \
  && php -v \

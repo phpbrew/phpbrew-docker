@@ -1,0 +1,2 @@
+PHP_VERSION=7.2
+PHP_VARIANTS="+zts+debug"
