@@ -54,4 +54,6 @@ RUN source ~/.phpbrew/bashrc \
  && phpbrew use $PHP_DIST_NAME \
  && which php \
  && php -v \
- && phpbrew info
+ && phpbrew info \
+ && mkdir -p /php \
+ && ln -s $(phpbrew path build) /php/$PHPBREW_PHP
