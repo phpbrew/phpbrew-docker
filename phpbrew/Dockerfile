@@ -56,4 +56,4 @@ RUN source ~/.phpbrew/bashrc \
  && php -v \
  && phpbrew info \
  && mkdir -p /src/php \
- && ln -s $(phpbrew path build) /src/php/$PHPBREW_PHP
+ && ln -s /root/.phpbrew/build/$PHPBREW_PHP /src/php/$PHPBREW_PHP

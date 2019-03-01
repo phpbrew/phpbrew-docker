@@ -79,7 +79,7 @@ SHELL ["/bin/bash", "-c"]
 RUN phpbrew init \
   && echo 'source $HOME/.phpbrew/bashrc' >> /root/.bashrc \
   && source ~/.phpbrew/bashrc \
-  && phpbrew install --downloader wget --mirror http://tw2.php.net $PHP_SUBVERSION \
+  && phpbrew install --downloader wget --mirror http://us1.php.net $PHP_SUBVERSION \
               +default +bcmath +bz2 +calendar +cli +ctype +dom +fileinfo +filter +json \
               +mbregex +mbstring +mhash +pcntl +pcre +pdo +phar +posix +readline +sockets \
               +tokenizer +xml +curl +zip +openssl=yes +icu +opcache +fpm +sqlite +mysql +icu +default +intl +gettext
