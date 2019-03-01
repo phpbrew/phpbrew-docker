@@ -38,7 +38,7 @@ RUN phpbrew init \
 
 ARG PHP_VERSION=7.2
 ARG PHP_DIST_NAME=$PHP_VERSION
-ARG PHP_MIRROR=http://tw2.php.net
+ARG PHP_MIRROR=http://us1.php.net
 ARG DOWNLOADER=wget
 ARG PHP_VARIANTS=
 
