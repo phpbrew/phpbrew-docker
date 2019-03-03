@@ -28,6 +28,8 @@ ENV PHPBREW_ROOT /root/.phpbrew
 # phpbrew home stores the user preference
 ENV PHPBREW_HOME /root/.phpbrew
 
+ENV PHPBREW_BIN=/root/.phpbrew/bin
+
 # enable bash prompt
 ENV PHPBREW_SET_PROMPT 1
 
@@ -57,3 +59,5 @@ RUN source ~/.phpbrew/bashrc \
  && phpbrew info \
  && mkdir -p /src/php \
  && ln -s /root/.phpbrew/build/$PHPBREW_PHP /src/php/$PHPBREW_PHP
+
+ENV PHPBREW_PHP=$PHP_DIST_NAME
