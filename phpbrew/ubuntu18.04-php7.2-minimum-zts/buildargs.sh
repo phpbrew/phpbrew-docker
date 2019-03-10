@@ -1,3 +1,5 @@
+cat <<END
 PHP_VERSION=7.2
 PHP_DIST_NAME=7.2
 PHP_VARIANTS="+zts+debug"
+END
