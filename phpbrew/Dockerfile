@@ -52,7 +52,7 @@ RUN source ~/.phpbrew/bashrc \
 RUN source ~/.phpbrew/bashrc \
  && phpbrew --debug install --mirror $$PHP_MIRROR --downloader $DOWNLOADER --stdout \
               $PHP_VERSION as $PHP_DIST_NAME \
-              +cli +phar +curl +json +bz2 +xml +filter +mbregex +mbstring +posix +pcntl $PHP_VARIANTS \
+              +cli +phar +curl +json +bz2 +xml +filter +hash +mbregex +mbstring +posix +pcntl $PHP_VARIANTS \
  && phpbrew use $PHP_DIST_NAME \
  && which php \
  && php -v \
