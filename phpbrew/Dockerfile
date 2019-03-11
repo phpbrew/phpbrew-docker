@@ -61,3 +61,4 @@ RUN source ~/.phpbrew/bashrc \
  && ln -s /root/.phpbrew/build/$PHPBREW_PHP /src/php/$PHPBREW_PHP
 
 ENV PHPBREW_PHP=$PHP_DIST_NAME
+ENV PATH=/root/.phpbrew/php/$PHP_DIST_NAME/bin:$PATH
